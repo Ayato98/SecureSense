@@ -1,29 +1,27 @@
-# Proyecto Increíble
+# SecureSense
 
-¡Bienvenido al Proyecto Increíble!
+¡Bienvenido al Proyecto SecureSense!
 
 ## Descripción
 
-El Proyecto Increíble es una increíble plataforma que combina innovación y creatividad para brindarte una experiencia inigualable. Con un enfoque en la excelencia y la usabilidad, este proyecto te ofrece una amplia gama de características impresionantes.
+El Proyecto SecureSense es un dispositivo que permite la lectura del estado del aire y al mismo tiempo monitorea movimientos en el entorno para lanzar una alerta por movimientos a travez de la app de mensajeria Telegram con un enlace para ver la actividad en tiempo real via streaming.
 
 ## Características Principales
 
-- Funcionalidad avanzada y fácil de usar.
-- Interfaz de usuario intuitiva y moderna.
-- Seguridad robusta con cifrado GPG para proteger tus datos y comunicaciones.
-- Integración perfecta con las últimas tecnologías.
-- Soporte multiplataforma para que puedas disfrutarlo en cualquier dispositivo.
+- Funcionalidad avanzada.
+- Soporte multiplataforma para que puedas ver la actividad en cualquier dispositivo.
 
 ## Instalación
 
 1. Clona este repositorio en tu máquina local.
-
+```css
 https://github.com/Ayato98/SecureSense.git
-
+```
 ## Uso
 
-2. Ejecuta la aplicación con el siguiente comando:
+2. Añade las dependencias del dispositivo usando la aplicacion de Thony
+3. Ejecuta el archivo index.py desde la app de escritorio de Thony para iniciar el servicio
 
-'''python
-python 
-'''
+gay el que lo lea
+
+desgay si me aprueba
