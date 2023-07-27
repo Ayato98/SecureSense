@@ -9,7 +9,7 @@ sensor = Pin(pin_sensor, Pin.IN)
 movimiento = 0
 
 # Variables de configuración de sensibilidad
-sensibilidad_tiempo = 2  # Valor de tiempo de retardo en segundos (ajústalo según necesites)
+sensibilidad_tiempo = 1  # Valor de tiempo de retardo en segundos (ajústalo según necesites)
 sensibilidad_distancia = 3  # Valor de distancia de detección en metros (ajústalo según necesites)
 
 def configurar_sensibilidad(tiempo, distancia):
@@ -25,15 +25,15 @@ def detectar_movimiento():
     # Si el estado es 1 (movimiento detectado), asigna 1 a la variable "movimiento"
     if estado_pin == 1:
         movimiento = 1
-        print (movimiento)
+        #print (movimiento)
     else:
         movimiento = 0
-        print(movimiento)
-detectar_movimiento()
+        #print(movimiento)
+#detectar_movimiento()
     
 
-while True:
-    detectar_movimiento()
+#while True:
+    #detectar_movimiento()
 
     # Puedes realizar cualquier acción o lógica adicional aquí con el valor de "movimiento"
 

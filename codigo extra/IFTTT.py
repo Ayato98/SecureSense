@@ -4,6 +4,9 @@
 import network, time, urequests
 from machine import Pin, ADC
 from utime import sleep, sleep_ms
+from machine import ADC, Pin
+import time
+
 #from dht import DHT22
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -26,27 +29,14 @@ if conectaWifi ("BlackHard", "Black98//"):
 
     print ("Conexión exitosa!")
     print('Datos de la red (IP/netmask/gw/DNS):', miRed.ifconfig())
+
     
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Creamos el objeto
 
-#led_flash = Pin(4, Pin.OUT)
-#led_flash.on()
-#gc.collect()
-#buf = tomar_foto()
-#sleep(1)
-#led_flash.off()
 
-# Configura el pin de salida del sensor RCWL0516
-pin_sensor = 14  # Reemplaza esto con el número de pin utilizado por tu ESP32
-sensor = Pin(pin_sensor, Pin.IN)
-
-# Variable para almacenar el estado de movimiento
-movimiento = 0
-
-# Variables de configuración de sensibilidad
-sensibilidad_tiempo = 2  # Valor de tiempo de retardo en segundos (ajústalo según necesites)
-sensibilidad_distancia = 3  # Valor de distancia de detección en metros (ajústalo según necesites)
+led = Pin(2, Pin.OUT) # Define el pin del LED
+sensor = ADC(Pin(13)) # Define el pin analógico del sensor
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Api solicitada:
@@ -56,7 +46,7 @@ sensibilidad_distancia = 3  # Valor de distancia de detección en metros (ajúst
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Otros Ejemplos:
 
-url= "https://maker.ifttt.com/trigger/Movimiento/with/key/btWwRnqZxN0ivEdwURcoA5YL1sESFL6jHgvhRjCWDJM?"
+url= "https://maker.ifttt.com/trigger/deteccion_mq2/with/key/btWwRnqZxN0ivEdwURcoA5YL1sESFL6jHgvhRjCWDJM?"
     # ir a la siguiente URL para la visualización  https://thingspeak.com/channels/2080912
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -67,46 +57,47 @@ url= "https://maker.ifttt.com/trigger/Movimiento/with/key/btWwRnqZxN0ivEdwURcoA5
         #hum = sensor_dht.humidity()
         #print("Tem:{}°c, Hum:{}%".format(tem, hum))
 
-def configurar_sensibilidad(tiempo, distancia):
-    global sensibilidad_tiempo, sensibilidad_distancia
-    sensibilidad_tiempo = tiempo
-    sensibilidad_distancia = distancia
-
-def detectar_movimiento():
-    global movimiento
-    # Lee el estado del pin del sensor (0 o 1)
-    estado_pin = sensor.value()
-
-    # Si el estado es 1 (movimiento detectado), asigna 1 a la variable "movimiento"
-    if estado_pin == 1:
-        movimiento = 1
-        print ("Hay movimiento")
-    else:
-        movimiento = 0
-        print("No hay movimiento")
-detectar_movimiento()
-    
-
 while True:
-    detectar_movimiento()
-
-    # Puedes realizar cualquier acción o lógica adicional aquí con el valor de "movimiento"
-
-    # Espera un breve período para evitar lecturas innecesarias y reducir la carga en la CPU
-    time.sleep(sensibilidad_tiempo)
+    lectura = sensor.read() # Lee el valor del sensor
+    voltaje = (lectura*5)/1023 # Convierte la lectura en voltaje
+    gas_licuado = (voltaje/1.1)*1000 # Convierte el voltaje en concentración de gas licuado (ppm)
+    humo = (voltaje/1.05)*1000 # Convierte el voltaje en concentración de humo (ppm)
+    dioxido_carbono = (voltaje/1.2)*1000 # Convierte el voltaje en concentración de dióxido de carbono (ppm)
+    
+           # print("Gas licuado: ", gas_licuado, "ppm")
+        #print("Humo: ", humo, "ppm")
+        #print("Dióxido de carbono: ", dioxido_carbono, "ppm")
+            #or humo > 2000 or dioxido_carbono > 2000
+    if gas_licuado > 14000 : # Si la concentración de gas supera los 2000 ppm, enciende el LED
+        print("Gas licuado: ", gas_licuado, "ppm")
+        print("Intoxicacion por Gas\n")
+            
+    elif humo > 15000:
+                #led.value(0)
+        print("Humo: ", humo, "ppm")
+        print("Intoxicacion por humo\n")
+            
+    elif dioxido_carbono > 13000:
+        print("Dióxido de carbono: ", dioxido_carbono, "ppm")
+        print("Intoxicacion por dioxido de carbono\n")
+            
+    else:
+        print("Aire limpio")
+    
+    time.sleep(1) # Espera 1 segundo antes de volver a leer el sensor
         
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Petición
 
         # respuesta = urequests.get(url+"&field1="+str(tem)+"&field2="+str(hum))# para thingspeak
-    respuesta = urequests.get(url+"&value1="+str(movimiento))# para ifttt
+    respuesta = urequests.get(url+"&value1="+str(gas))# para ifttt
     print(respuesta.text)
     print(respuesta.status_code)
     respuesta.close ()
     time.sleep(4)
 
  
-else:
-    print ("Imposible conectar")
-    miRed.active (False)
+#        else:
+ #           print ("Imposible conectar")
+ #           miRed.active (False)
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

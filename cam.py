@@ -10,11 +10,13 @@ led_flash = Pin(4, Pin.OUT)
 led_flash.on()
 sleep(1)
 led_flash.off()
-""" 
+"""
 
+    
 def tomar_foto(nombre= 'Foto.jpeg', voltear= 0, espejo= 1):    
-    camera.init(0, format=camera.JPEG, fb_location=camera.PSRAM)
-    #camera.framesize(camera.FRAME_VGA)    
+    camera.init(0, format=camera.JPEG, fb_location=camera.PSRAM)    
+    camera.framesize(camera.FRAME_240X240)    
+        #camera.framesize(camera.FRAME_VGA)    
     camera.flip(voltear)
     camera.mirror(espejo)    
     buf = camera.capture()    
@@ -23,11 +25,10 @@ def tomar_foto(nombre= 'Foto.jpeg', voltear= 0, espejo= 1):
     f.close()
     camera.deinit()
     return buf
-
-
-led_flash = Pin(4, Pin.OUT)
-led_flash.on(1)
-gc.collect()
-buf = tomar_foto()
-sleep(1)
-led_flash.off()
+def ejecucion():
+    led_flash = Pin(4, Pin.OUT)
+    led_flash.on()
+    gc.collect()
+    buf = tomar_foto()
+    sleep(1)
+    led_flash.off()
